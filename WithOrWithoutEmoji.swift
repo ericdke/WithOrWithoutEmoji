@@ -97,3 +97,31 @@ public extension NSString {
     }
     
 }
+
+extension String {
+    
+    public var containsEmoji: Bool {
+        return (self as NSString).containsEmoji
+    }
+    
+    public func allEmojisFromString() -> [String] {
+        return (self as NSString).allEmojisFromString()
+    }
+    
+    public func allLettersFromString() -> [String] {
+        return (self as NSString).allLettersFromString()
+    }
+    
+    public func stringWithoutEmojis() -> String {
+        return (self as NSString).stringWithoutEmojis()
+    }
+    
+    public func stringWithOnlyEmojis() -> String {
+        return (self as NSString).stringWithOnlyEmojis()
+    }
+    
+    public var emojiCount: Int {
+        return (self as NSString).emojiCount
+    }
+    
+}
