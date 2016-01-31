@@ -98,7 +98,7 @@ public extension NSString {
     
 }
 
-extension String {
+public extension String {
     
     public var containsEmoji: Bool {
         return (self as NSString).containsEmoji
