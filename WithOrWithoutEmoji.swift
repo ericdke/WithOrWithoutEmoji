@@ -5,18 +5,18 @@ public extension NSString {
     private func _containsAnEmoji() -> Bool {
         // Original Objective-C code by Gabriel Massana https://github.com/GabrielMassana
         // Adapted to Swift 2 by Eric Dejonckheere https://github.com/ericdke
-        let hs = self.characterAtIndex(0)
+        let hs = self.character(at: 0)
         // surrogate pair
         if 0xd800 <= hs && hs <= 0xdbff {
             if self.length > 1 {
-                let ls = self.characterAtIndex(1)
+                let ls = self.character(at: 1)
                 let uc:Int = Int(((hs - 0xd800) * 0x400) + (ls - 0xdc00)) + 0x10000
                 if 0x1d000 <= uc && uc <= 0x1f9c0 {
                     return true
                 }
             }
         } else if self.length > 1 {
-            let ls = self.characterAtIndex(1)
+            let ls = self.character(at: 1)
             if ls == 0x20e3 || ls == 0xfe0f || ls == 0xd83c {
                 return true
             }
@@ -45,8 +45,8 @@ public extension NSString {
     
     public var containsEmoji: Bool {
         var isEmoji = false
-        self.enumerateSubstringsInRange(NSRange(location: 0, length: self.length),
-                                        options: .ByComposedCharacterSequences) {
+        self.enumerateSubstrings(in: NSRange(location: 0, length: self.length),
+                                        options: .byComposedCharacterSequences) {
                                         (substring, substringRange, _, stop) in
             if let substring = substring {
                 if (substring as NSString)._containsAnEmoji() {
@@ -61,8 +61,8 @@ public extension NSString {
     
     private func _emojiRanges() -> [NSRange] {
         var emojiRangesArray = [NSRange]()
-        self.enumerateSubstringsInRange(NSRange(location: 0, length: self.length),
-                                        options: NSStringEnumerationOptions.ByComposedCharacterSequences) {
+        self.enumerateSubstrings(in: NSRange(location: 0, length: self.length),
+                                        options: NSStringEnumerationOptions.byComposedCharacterSequences) {
                                         (substring, substringRange, _, _) in
             if let substring = substring {
                 if (substring as NSString)._containsAnEmoji() {
@@ -75,21 +75,21 @@ public extension NSString {
     
     public func allEmojisFromString() -> [String] {
         let ranges = self._emojiRanges()
-        return ranges.map { self.substringWithRange($0) }
+        return ranges.map { self.substring(with: $0) }
     }
     
     public func allLettersFromString() -> [String] {
         let emojis = self.allEmojisFromString()
-        let charset = NSCharacterSet(charactersInString: emojis.joinWithSeparator(""))
-        return self.componentsSeparatedByCharactersInSet(charset).filter { !$0.isEmpty }
+        let charset = NSCharacterSet(charactersIn: emojis.joined(separator: ""))
+        return self.components(separatedBy: charset).filter { !$0.isEmpty }
     }
     
     public func stringWithoutEmojis() -> String {
-        return self.allLettersFromString().joinWithSeparator("")
+        return self.allLettersFromString().joined(separator: "")
     }
     
     public func stringWithOnlyEmojis() -> String {
-        return self.allEmojisFromString().joinWithSeparator("")
+        return self.allEmojisFromString().joined(separator: "")
     }
     
     public var emojiCount: Int {
