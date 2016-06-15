@@ -4,7 +4,7 @@ public extension NSString {
     
     private func _containsAnEmoji() -> Bool {
         // Original Objective-C code by Gabriel Massana https://github.com/GabrielMassana
-        // Adapted to Swift 2 by Eric Dejonckheere https://github.com/ericdke
+        // Adapted to Swift 3 by Eric Dejonckheere https://github.com/ericdke
         let hs = self.character(at: 0)
         // surrogate pair
         if 0xd800 <= hs && hs <= 0xdbff {
@@ -43,11 +43,35 @@ public extension NSString {
         return false
     }
     
+}
+
+public extension String {
+    
+    public var condensedWhitespace: String {
+        let components = self.components(separatedBy: NSCharacterSet.whitespacesAndNewlines())
+        return components.filter { !$0.isEmpty }.joined(separator: " ")
+    }
+    
+    public var emojiRanges: [NSRange] {
+        var emojiRangesArray = [NSRange]()
+        (self as NSString).enumerateSubstrings(in: NSRange(location: 0, length: (self as NSString).length),
+                                 options: .byComposedCharacterSequences) {
+                                    (substring, substringRange, _, _) in
+            if let substring = substring {
+                if (substring as NSString)._containsAnEmoji() {
+                    emojiRangesArray.append(substringRange)
+                }
+            }
+        }
+        return emojiRangesArray
+    }
+    
     public var containsEmoji: Bool {
         var isEmoji = false
-        self.enumerateSubstrings(in: NSRange(location: 0, length: self.length),
-                                        options: .byComposedCharacterSequences) {
-                                        (substring, substringRange, _, stop) in
+        (self as NSString).enumerateSubstrings(in:
+                                NSRange(location: 0, length: (self as NSString).length),
+                                 options: .byComposedCharacterSequences) {
+                                    (substring, substringRange, _, stop) in
             if let substring = substring {
                 if (substring as NSString)._containsAnEmoji() {
                     isEmoji = true
@@ -59,69 +83,35 @@ public extension NSString {
         return isEmoji
     }
     
-    private func _emojiRanges() -> [NSRange] {
-        var emojiRangesArray = [NSRange]()
-        self.enumerateSubstrings(in: NSRange(location: 0, length: self.length),
-                                        options: NSStringEnumerationOptions.byComposedCharacterSequences) {
-                                        (substring, substringRange, _, _) in
-            if let substring = substring {
-                if (substring as NSString)._containsAnEmoji() {
-                    emojiRangesArray.append(substringRange)
-                }
-            }
-        }
-        return emojiRangesArray
+    public var emojisWithoutLetters: [String] {
+        return self.emojiRanges.map { (self as NSString).substring(with: $0) }
     }
     
-    public func allEmojisFromString() -> [String] {
-        let ranges = self._emojiRanges()
-        return ranges.map { self.substring(with: $0) }
+    public var lettersWithoutEmojis: [String] {
+        var charSet = CharacterSet()
+        charSet.insert(charactersIn: self.emojisWithoutLetters.joined(separator: ""))
+        let wo = self.components(separatedBy: charSet).joined(separator: "")
+        return wo.characters.map { String($0) }.filter { $0 != "" }
     }
     
-    public func allLettersFromString() -> [String] {
-        let emojis = self.allEmojisFromString()
-        let charset = NSCharacterSet(charactersIn: emojis.joined(separator: ""))
-        return self.components(separatedBy: charset).filter { !$0.isEmpty }
+    public var condensedLetters: [String] {
+        return self.lettersWithoutEmojis.filter { !$0.isEmpty && $0 != " " }
     }
     
-    public func stringWithoutEmojis() -> String {
-        return self.allLettersFromString().joined(separator: "")
+    public var stringWithoutEmojis: String {
+        return self.lettersWithoutEmojis.joined(separator: "")
     }
     
-    public func stringWithOnlyEmojis() -> String {
-        return self.allEmojisFromString().joined(separator: "")
+    public var condensedStringWithoutEmojis: String {
+        return self.lettersWithoutEmojis.joined(separator: "").condensedWhitespace
+    }
+    
+    public var stringWithOnlyEmojis: String {
+        return self.emojisWithoutLetters.joined(separator: "")
     }
     
     public var emojiCount: Int {
-        return self.allEmojisFromString().count
-    }
-    
-}
-
-public extension String {
-    
-    public var containsEmoji: Bool {
-        return (self as NSString).containsEmoji
-    }
-    
-    public func allEmojisFromString() -> [String] {
-        return (self as NSString).allEmojisFromString()
-    }
-    
-    public func allLettersFromString() -> [String] {
-        return (self as NSString).allLettersFromString()
-    }
-    
-    public func stringWithoutEmojis() -> String {
-        return (self as NSString).stringWithoutEmojis()
-    }
-    
-    public func stringWithOnlyEmojis() -> String {
-        return (self as NSString).stringWithOnlyEmojis()
-    }
-    
-    public var emojiCount: Int {
-        return (self as NSString).emojiCount
+        return self.emojisWithoutLetters.count
     }
     
 }
