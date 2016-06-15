@@ -1,8 +1,8 @@
-![](https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat)
+![](https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat) ![](https://img.shields.io/badge/Swift-3-orange.svg?style=flat)
 
 # With Or Without Emojis
 
-A simple Swift String and NSString extension:
+A simple Swift String extension:
 
 - find if the String contains at least one Emoji
 
@@ -12,9 +12,7 @@ A simple Swift String and NSString extension:
 
 - return the String with only the Emojis
 
-- return an Array of the String's Emojis only
-
-- return an Array of the String's letters without the Emojis
+- return an Array of the String's Emojis
 
 As of 2016/01/31, works with all Emojis, including skin fades and country flags.
 
@@ -24,15 +22,15 @@ Works for OS X and iOS: the extension itself imports Foundation, it's necessary 
 
 Copy the *WithOrWithoutEmojis.swift* file in your Swift project, or copy the content in one of your Swift files.
 
-Adds these properties and methods on `String` and `NSString`:
+It adds these properties on `String`:
 
 ```
 containsEmoji: Bool
 emojiCount: Int
-stringWithoutEmojis() -> String
-stringWithOnlyEmojis() -> String
-allLettersFromString() -> [String]
-allEmojisFromString() -> [String]
+stringWithoutEmojis: String
+stringWithOnlyEmojis: String
+lettersWithoutEmojis: [String]
+emojisWithoutLetters: [String]
 ```
 
 ## Credit
