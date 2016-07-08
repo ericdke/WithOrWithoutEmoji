@@ -1,5 +1,0 @@
-version: "Swift version 3.0 (swift-3.0-PREVIEW-2)"
-options: "067a5f57dbde9e19735217926312aca8"
-build_time: [521327868, 594782000]
-inputs:
-  "/home/osboxes/scripts/WithOrWithoutEmoji/Sources/WithOrWithoutEmoji.swift": [521327859, 0]
