@@ -16,8 +16,6 @@ A simple Swift String extension:
 
 As of 2016/01/31, works with all Emojis, including skin fades and country flags.
 
-Works for OS X and iOS: the extension itself imports Foundation, it's necessary for the NSString to String bridging (it doesn't work for Linux yet).
-
 ## Usage
 
 Copy the *WithOrWithoutEmojis.swift* file in your Swift project, or copy the content in one of your Swift files.

@@ -54,11 +54,13 @@ public extension String {
     
     public var emojiRanges: [NSRange] {
         var emojiRangesArray = [NSRange]()
-        (self as NSString).enumerateSubstrings(in: NSRange(location: 0, length: (self as NSString).length),
+        let s = NSString(string:self)
+        s.enumerateSubstrings(in: NSRange(location: 0, length: s.length),
                                  options: .byComposedCharacterSequences) {
                                     (substring, substringRange, _, _) in
             if let substring = substring {
-                if (substring as NSString)._containsAnEmoji() {
+                let sub = NSString(string:substring)
+                if sub._containsAnEmoji() {
                     emojiRangesArray.append(substringRange)
                 }
             }
@@ -68,12 +70,14 @@ public extension String {
     
     public var containsEmoji: Bool {
         var isEmoji = false
-        (self as NSString).enumerateSubstrings(in:
-                                NSRange(location: 0, length: (self as NSString).length),
+        let s = NSString(string:self)
+        s.enumerateSubstrings(in:
+                                NSRange(location: 0, length: s.length),
                                  options: .byComposedCharacterSequences) {
                                     (substring, substringRange, _, stop) in
             if let substring = substring {
-                if (substring as NSString)._containsAnEmoji() {
+                let sub = NSString(string:substring)
+                if sub._containsAnEmoji() {
                     isEmoji = true
                     // Stops the enumeration by setting the unsafe pointer to ObjcBool memory value, false by default in the closure parameters, to true.
                     stop[0] = true
@@ -84,12 +88,17 @@ public extension String {
     }
     
     public var emojisWithoutLetters: [String] {
-        return self.emojiRanges.map { (self as NSString).substring(with: $0) }
+        let s = NSString(string:self)
+        return self.emojiRanges.map { s.substring(with: $0) }
     }
     
     public var lettersWithoutEmojis: [String] {
-        var charSet = CharacterSet()
-        charSet.insert(charactersIn: self.emojisWithoutLetters.joined(separator: ""))
+        #if os(OSX)
+            var charSet = CharacterSet()
+            charSet.insert(charactersIn: self.emojisWithoutLetters.joined(separator: ""))
+        #else
+            let charSet = NSCharacterSet(charactersIn: self.emojisWithoutLetters.joined(separator: ""))
+        #endif
         let wo = self.components(separatedBy: charSet).joined(separator: "")
         return wo.characters.map { String($0) }.filter { $0 != "" }
     }
