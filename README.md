@@ -16,11 +16,13 @@ A simple Swift String extension:
 
 As of 2016/01/31, works with all Emojis, including skin fades and country flags.
 
+## Install
+
+Copy the *WithOrWithoutEmojis.swift* file in your Swift project, or copy the content in one of your Swift files, or use this repository as a dependency with the Swift Package Manager.
+
 ## Usage
 
-Copy the *WithOrWithoutEmojis.swift* file in your Swift project, or copy the content in one of your Swift files.
-
-It adds these properties on `String`:
+WithOrWithoutEmojis adds these properties on `String`:
 
 ```
 containsEmoji: Bool
