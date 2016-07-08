@@ -25,10 +25,16 @@ It adds these properties on `String`:
 ```
 containsEmoji: Bool
 emojiCount: Int
-stringWithoutEmojis: String
-stringWithOnlyEmojis: String
+
+withoutEmojis: String
+onlyEmojis: String
+
 lettersWithoutEmojis: [String]
 emojisWithoutLetters: [String]
+
+condensedStringWithoutEmojis: String
+condensedLettersWithoutEmojis: [String]
+
 ```
 
 ## Credit

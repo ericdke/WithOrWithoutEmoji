@@ -29,13 +29,13 @@ public extension NSString {
             {
                 return true
             } else if   hs == 0xa9   ||
-                        hs == 0xae   ||
-                        hs == 0x303d ||
-                        hs == 0x3030 ||
-                        hs == 0x2b55 ||
-                        hs == 0x2b1c ||
-                        hs == 0x2b1b ||
-                        hs == 0x2b50
+                hs == 0xae   ||
+                hs == 0x303d ||
+                hs == 0x3030 ||
+                hs == 0x2b55 ||
+                hs == 0x2b1c ||
+                hs == 0x2b1b ||
+                hs == 0x2b50
             {
                 return true
             }
@@ -48,7 +48,11 @@ public extension NSString {
 public extension String {
     
     public var condensedWhitespace: String {
-        let components = self.components(separatedBy: NSCharacterSet.whitespacesAndNewlines())
+        #if os(OSX)
+            let components = self.components(separatedBy: CharacterSet.whitespacesAndNewlines)
+        #else
+            let components = self.components(separatedBy: NSCharacterSet.whitespacesAndNewlines())
+        #endif
         return components.filter { !$0.isEmpty }.joined(separator: " ")
     }
     
@@ -56,14 +60,14 @@ public extension String {
         var emojiRangesArray = [NSRange]()
         let s = NSString(string:self)
         s.enumerateSubstrings(in: NSRange(location: 0, length: s.length),
-                                 options: .byComposedCharacterSequences) {
-                                    (substring, substringRange, _, _) in
-            if let substring = substring {
-                let sub = NSString(string:substring)
-                if sub._containsAnEmoji() {
-                    emojiRangesArray.append(substringRange)
-                }
-            }
+                              options: .byComposedCharacterSequences) {
+                                (substring, substringRange, _, _) in
+                                if let substring = substring {
+                                    let sub = NSString(string:substring)
+                                    if sub._containsAnEmoji() {
+                                        emojiRangesArray.append(substringRange)
+                                    }
+                                }
         }
         return emojiRangesArray
     }
@@ -72,17 +76,17 @@ public extension String {
         var isEmoji = false
         let s = NSString(string:self)
         s.enumerateSubstrings(in:
-                                NSRange(location: 0, length: s.length),
-                                 options: .byComposedCharacterSequences) {
-                                    (substring, substringRange, _, stop) in
-            if let substring = substring {
-                let sub = NSString(string:substring)
-                if sub._containsAnEmoji() {
-                    isEmoji = true
-                    // Stops the enumeration by setting the unsafe pointer to ObjcBool memory value, false by default in the closure parameters, to true.
-                    stop[0] = true
-                }
-            }
+            NSRange(location: 0, length: s.length),
+                              options: .byComposedCharacterSequences) {
+                                (substring, substringRange, _, stop) in
+                                if let substring = substring {
+                                    let sub = NSString(string:substring)
+                                    if sub._containsAnEmoji() {
+                                        isEmoji = true
+                                        // Stops the enumeration by setting the unsafe pointer to ObjcBool memory value, false by default in the closure parameters, to true.
+                                        stop[0] = true
+                                    }
+                                }
         }
         return isEmoji
     }
@@ -103,11 +107,11 @@ public extension String {
         return wo.characters.map { String($0) }.filter { $0 != "" }
     }
     
-    public var condensedLetters: [String] {
+    public var condensedLettersWithoutEmojis: [String] {
         return self.lettersWithoutEmojis.filter { !$0.isEmpty && $0 != " " }
     }
     
-    public var stringWithoutEmojis: String {
+    public var withoutEmojis: String {
         return self.lettersWithoutEmojis.joined(separator: "")
     }
     
@@ -115,7 +119,7 @@ public extension String {
         return self.lettersWithoutEmojis.joined(separator: "").condensedWhitespace
     }
     
-    public var stringWithOnlyEmojis: String {
+    public var onlyEmojis: String {
         return self.emojisWithoutLetters.joined(separator: "")
     }
     
