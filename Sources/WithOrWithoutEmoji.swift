@@ -2,7 +2,7 @@ import Foundation
 
 public extension NSString {
     
-    private func _containsAnEmoji() -> Bool {
+    fileprivate func _containsAnEmoji() -> Bool {
         // Original Objective-C code by Gabriel Massana https://github.com/GabrielMassana
         // Adapted to Swift 3 by Eric Dejonckheere https://github.com/ericdke
         let hs = self.character(at: 0)
