@@ -4,7 +4,7 @@ public extension NSString {
     
     fileprivate func _containsAnEmoji() -> Bool {
         // Original Objective-C code by Gabriel Massana https://github.com/GabrielMassana
-        // Adapted to Swift 3 by Eric Dejonckheere https://github.com/ericdke
+        // Adapted to Swift 3 by Eric Aya https://github.com/ericdke
         let hs = self.character(at: 0)
         // surrogate pair
         if 0xd800 <= hs && hs <= 0xdbff {
@@ -49,7 +49,7 @@ public extension String {
     
     public var condensedWhitespace: String {
         #if os(OSX)
-            let components = self.components(separatedBy: CharacterSet.whitespacesAndNewlines)
+            let components = self.components(separatedBy: .whitespacesAndNewlines)
         #else
             let components = self.components(separatedBy: NSCharacterSet.whitespacesAndNewlines())
         #endif
@@ -57,19 +57,18 @@ public extension String {
     }
     
     public var emojiRanges: [NSRange] {
-        var emojiRangesArray = [NSRange]()
+        var ranges = [NSRange]()
         let s = NSString(string:self)
         s.enumerateSubstrings(in: NSRange(location: 0, length: s.length),
                               options: .byComposedCharacterSequences) {
                                 (substring, substringRange, _, _) in
-                                if let substring = substring {
-                                    let sub = NSString(string:substring)
-                                    if sub._containsAnEmoji() {
-                                        emojiRangesArray.append(substringRange)
-                                    }
-                                }
+            if let substring = substring {
+                if NSString(string: substring)._containsAnEmoji() {
+                    ranges.append(substringRange)
+                }
+            }
         }
-        return emojiRangesArray
+        return ranges
     }
     
     public var containsEmoji: Bool {
@@ -79,14 +78,13 @@ public extension String {
             NSRange(location: 0, length: s.length),
                               options: .byComposedCharacterSequences) {
                                 (substring, substringRange, _, stop) in
-                                if let substring = substring {
-                                    let sub = NSString(string:substring)
-                                    if sub._containsAnEmoji() {
-                                        isEmoji = true
-                                        // Stops the enumeration by setting the unsafe pointer to ObjcBool memory value, false by default in the closure parameters, to true.
-                                        stop[0] = true
-                                    }
-                                }
+            if let substring = substring {
+                if NSString(string:substring)._containsAnEmoji() {
+                    isEmoji = true
+                    // Stops the enumeration by setting the unsafe pointer to ObjcBool memory value, false by default in the closure parameters, to true.
+                    stop[0] = true
+                }
+            }
         }
         return isEmoji
     }
