@@ -14,7 +14,7 @@ A simple Swift String extension:
 
 - return an Array of the String's Emojis
 
-As of 2016/01/31, works with all Emojis, including skin fades and country flags.
+As of 2016/11/11, works with all Emojis, including skin fades and country flags.
 
 ## Install
 

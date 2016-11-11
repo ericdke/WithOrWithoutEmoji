@@ -4,7 +4,7 @@ public extension NSString {
     
     fileprivate func _containsAnEmoji() -> Bool {
         // Original Objective-C code by Gabriel Massana https://github.com/GabrielMassana
-        // Adapted to Swift 3 by Eric Aya https://github.com/ericdke
+        // Adapted to Swift 3 by Eric Dejonckheere https://github.com/ericdke
         let hs = self.character(at: 0)
         // surrogate pair
         if 0xd800 <= hs && hs <= 0xdbff {
